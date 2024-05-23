@@ -53,7 +53,8 @@ jobs:
 
       - name: Push changes
         run: |
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/dstmath/oppo_a57_kernel_source.git
           git push origin main
         working-directory: new_repo
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
