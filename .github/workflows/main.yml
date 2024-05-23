@@ -1,0 +1,58 @@
+name: Merge Repositories
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout new repository
+        uses: actions/checkout@v2
+        with:
+          repository: dstmath/oppo_a57_kernel_source
+          path: new_repo
+
+      - name: Checkout android_kernel_oppo_mt6833
+        uses: actions/checkout@v2
+        with:
+          repository: dstmath/android_kernel_oppo_mt6833
+          ref: oppo/mt6833_u_14.0.0_a97_a57_5g
+          path: temp/android_kernel_oppo_mt6833
+
+      - name: Checkout android_kernel_modules_oppo_mt6833
+        uses: actions/checkout@v2
+        with:
+          repository: dstmath/android_kernel_modules_oppo_mt6833
+          path: temp/android_kernel_modules_oppo_mt6833
+
+      - name: Move android_kernel_oppo_mt6833 to new_repo
+        run: |
+          mkdir -p new_repo/android_kernel_oppo_mt6833
+          mv temp/android_kernel_oppo_mt6833/* new_repo/android_kernel_oppo_mt6833/
+
+      - name: Move android_kernel_modules_oppo_mt6833 to new_repo as vendor
+        run: |
+          mkdir -p new_repo/vendor
+          mv temp/android_kernel_modules_oppo_mt6833/* new_repo/vendor/
+
+      - name: Configure git
+        run: |
+          git config --global user.name "dstmath"
+          git config --global user.email "dstmath@163.com"
+        working-directory: new_repo
+
+      - name: Commit changes
+        run: |
+          git add .
+          git commit -m "Merge android_kernel_oppo_mt6833 and android_kernel_modules_oppo_mt6833"
+        working-directory: new_repo
+
+      - name: Push changes
+        run: git push origin main
+        working-directory: new_repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
