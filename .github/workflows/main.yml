@@ -1,5 +1,5 @@
 name: Merge Repositories
- 
+
 on:
   push:
     branches:
@@ -41,8 +41,8 @@ jobs:
 
       - name: Configure git
         run: |
-          git config --global user.name "dstmath"
-          git config --global user.email "dstmath@163.com"
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
         working-directory: new_repo
 
       - name: Commit changes
@@ -52,7 +52,8 @@ jobs:
         working-directory: new_repo
 
       - name: Push changes
-        run: git push origin main
+        run: |
+          git push origin main
         working-directory: new_repo
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
